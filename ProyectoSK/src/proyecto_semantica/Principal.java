@@ -14,6 +14,8 @@ import com.ibm.icu.text.SimpleDateFormat;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -24,37 +26,50 @@ public class Principal {
 	float[] tiempos_query= new float[100];
 	float[] incrementos= new float[100];
 
-    for(int i=0; i<2; i++){
+    for(int i=0; i<10; i++){
         
-		Timestamp t1 = new Timestamp(System.currentTimeMillis());
+		
 		//Se lee el archivo principal //url para convertir: http://mowl-power.cs.man.ac.uk:8080/converter/ 
-		String ontologyURL = "file:///D:\\MINE\\Knowledge Semantic\\PROYECTO\\travel2.owl";
-		Timestamp t2 = new Timestamp(System.currentTimeMillis());
-		float diferencia= t2.getTime()-t1.getTime()+i;
-		tiempos_load[i]=diferencia;
-		incrementos[i]=i;
+		String ontologyURL = "src/travel2.owl";
+		
+		//incrementos[i]=i;
 
 		// Se crea el modelo de la ontologia
 		OntModel ontology = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_MICRO_RULE_INF);
 		
-		//Leyendo la ontología
-		ontology.read( ontologyURL, "RDF/XML" );
+		Date t1 = new Date();
 		
-		//tiempo 1 
-		Timestamp t3 = new Timestamp(System.currentTimeMillis());
+		//Leyendo la ontología
+		try {
+			ontology.read( new FileInputStream(ontologyURL), "RDF/XML" );
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Date t2 = new Date();
+		System.out.println("Load" + t1 + " " + t2);
+		long diferencia= t2.getTime()-t1.getTime();
+		tiempos_load[i]=diferencia;
+		
 		//Haciendo la consulta
 		String queryString = "PREFIX viajes:<http://www.owl-ontologies.com/travel.owl#>"+"\n";
 		queryString += "SELECT  ?destino"+ "\n";// ?person, ?company
-		queryString += "WHERE {?destino a viajes:BackpackersDestination .}";
+		queryString += "WHERE {?destino a viajes:City .}";
 
 		//execute query
 		Query query = QueryFactory.create(queryString);
 		QueryExecution qe = QueryExecutionFactory.create(query,ontology);
+		
+		//tiempo 1 
+		Date t3 = new Date();
+		
 		ResultSet results = qe.execSelect();
 		
 		//tiempo 2 
-		Timestamp t4 = new Timestamp(System.currentTimeMillis());
-		float diferencia2= t4.getTime()-t3.getTime()+i;
+		Date t4 = new Date();
+		System.out.println("Query" + t3 + " " + t4);
+		long diferencia2= t4.getTime()-t3.getTime();
 		tiempos_query[i]=diferencia2;
 		// print results nicely
 		System.out.println(ResultSetFormatter.asText(results));
