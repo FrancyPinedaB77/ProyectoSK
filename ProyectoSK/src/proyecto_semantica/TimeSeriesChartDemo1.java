@@ -1,4 +1,4 @@
-package prueba1proyecto;
+package proyecto_semantica;
 
 
 import java.awt.Color;
