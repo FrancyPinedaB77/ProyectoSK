@@ -14,11 +14,20 @@ import com.ibm.icu.text.SimpleDateFormat;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class Principal {
 	public static void main(String[] args) {
@@ -26,11 +35,11 @@ public class Principal {
 	float[] tiempos_query= new float[100];
 	float[] incrementos= new float[100];
 
-    for(int i=0; i<10; i++){
+    for(int i=0; i<2; i++){
         
 		
 		//Se lee el archivo principal //url para convertir: http://mowl-power.cs.man.ac.uk:8080/converter/ 
-		String ontologyURL = "src/travel2.owl";
+		String ontologyURL = "src/travel_v3.owl";
 		
 		//incrementos[i]=i;
 
@@ -46,8 +55,30 @@ public class Principal {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		Date t2 = new Date();
+
+		//-----------------------INICIA LA CLASE:                 -------------------------------------//
+		
+		String statement = "\n" +"	"+ "<owl:NamedIndividual rdf:about=\"http://www.owl-ontologies.com/travel.owl#ThreeStarRating_"+i+"\">"+ "\n";
+		statement += "		"+"<rdf:type rdf:resource=\"http://www.owl-ontologies.com/travel.owl#AccommodationRating\"/>"+"\n";
+		statement += "	"+"</owl:NamedIndividual>"+ "\n\n";
+		System.out.println(statement);
+		
+		//insert statement
+		Path path =Paths.get("src/travel_v3.owl");
+		Charset charset = StandardCharsets.UTF_8;
+		String content;
+		try{
+			content =new String(Files.readAllBytes(path),charset);
+			content = content.replaceAll("</rdf:RDF>", statement +"</rdf:RDF>");
+			Files.write(path, content.getBytes(charset));
+		} catch (IOException e){
+			//Auto-generated catch block
+			e.printStackTrace();		
+		}
+		
+		//-----------------------INICIA LA CLASE:                 -------------------------------------//
+			
 		System.out.println("Load" + t1 + " " + t2);
 		long diferencia= t2.getTime()-t1.getTime();
 		tiempos_load[i]=diferencia;
@@ -55,7 +86,7 @@ public class Principal {
 		//Haciendo la consulta
 		String queryString = "PREFIX viajes:<http://www.owl-ontologies.com/travel.owl#>"+"\n";
 		queryString += "SELECT  ?destino"+ "\n";// ?person, ?company
-		queryString += "WHERE {?destino a viajes:City .}";
+		queryString += "WHERE {?destino a viajes:AccommodationRating .}";
 
 		//execute query
 		Query query = QueryFactory.create(queryString);
