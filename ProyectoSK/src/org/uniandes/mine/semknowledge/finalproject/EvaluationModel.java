@@ -1,5 +1,19 @@
 package org.uniandes.mine.semknowledge.finalproject;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 public class EvaluationModel {
 	
@@ -7,6 +21,9 @@ public class EvaluationModel {
 	 * Atributos de la clase
 	 */
 	private DataModel dataModel = DataModel.getInstance();
+	
+	private String OWL_PATH = "src/travel2.owl";
+	
 	
 	/*
 	 * Métodos de la clase
@@ -16,7 +33,7 @@ public class EvaluationModel {
 	public EvaluationModel() {}
 	
 	// Método que inicia la evaluación
-	public void startEvaluation( int stopParam ) {
+	public void startEvaluation( int stopParam, int stepParam, int iterParam ) {
 		
 		// Reinicia los datasets
 		dataModel.getRdfLoadTimeDataset().clear();
@@ -24,15 +41,117 @@ public class EvaluationModel {
 		dataModel.getRdfQueryResponseTimeDataset().clear();
 		dataModel.getOwlQueryResponseTimeDataset().clear();
 		
-		for( int i = 0 ; i < stopParam ; i++ ) {
+		for( int i = 1 ; i <= stopParam + 1 ; i = i + stepParam ) {
 			
-			dataModel.getRdfLoadTimeDataset().add( i , Math.random() * 10 );
-			dataModel.getOwlLoadTimeDataset().add( i , Math.random() * 10 );
+			OntModel owlFile = null;
 			
-			dataModel.getRdfQueryResponseTimeDataset().add( i , Math.random() * 10 );
-			dataModel.getOwlQueryResponseTimeDataset().add( i , Math.random() * 10 );
+			/*
+			 * Load Time - RDF
+			 */
+			
+			List<Double> acum = new ArrayList<Double>();
+			for( int j = 0 ; j < iterParam ; j++ ) {
+				acum.add( Math.random() * 10 );
+			}
+			
+			dataModel.getRdfLoadTimeDataset().add( i , getMaxValue( acum ) );
+			
+			/*
+			 * Load Time - OWL
+			 */
+			
+			acum = new ArrayList<Double>();
+			for( int j = 0 ; j < iterParam ; j++ ) {
+				
+				Date initTime = new Date();
+				
+				owlFile = loadOWLFile();
+				
+				Date endDate = new Date();
+				long diferencia= endDate.getTime() - initTime.getTime();
+				
+				acum.add( Double.parseDouble( diferencia + "" ) );
+				
+			}
+			
+			dataModel.getOwlLoadTimeDataset().add( i , getMaxValue( acum ) );
+			
+			/*
+			 * Query Response Time - RDF
+			 */
+			
+			acum = new ArrayList<Double>();
+			for( int j = 0 ; j < iterParam ; j++ ) {
+				acum.add( Math.random() * 10 );
+			}
+			
+			dataModel.getRdfQueryResponseTimeDataset().add( i , getMaxValue( acum ) );
+			
+			/*
+			 * Query Response Time - OWL
+			 */
+			
+			acum = new ArrayList<Double>();
+			for( int j = 0 ; j < iterParam ; j++ ) {
+				
+				Date initTime = new Date();
+				
+				queryOWLFile( owlFile );
+				
+				Date endDate = new Date();
+				long diferencia= endDate.getTime() - initTime.getTime();
+				
+				acum.add( Double.parseDouble( diferencia + "" ) );
+				
+			}
+			
+			dataModel.getOwlQueryResponseTimeDataset().add( i , getMaxValue( acum ) );
 			
 		}
+		
+	}
+	
+	public OntModel loadOWLFile() {
+		
+		OntModel owlFile = null;
+		
+		try {
+			
+			owlFile = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_MICRO_RULE_INF );
+			owlFile.read( new FileInputStream( OWL_PATH ), "RDF/XML" );
+			
+		} catch (FileNotFoundException e) {
+			System.err.println( "Error al cargar el archivo OWL" ) ;
+			e.printStackTrace();
+		}
+		
+		return owlFile;
+		
+	}
+	
+	public void queryOWLFile( OntModel owlFile ) {
+		
+		String queryString = "PREFIX viajes:<http://www.owl-ontologies.com/travel.owl#>"+"\n";
+		queryString += "SELECT  ?destino"+ "\n";
+		queryString += "WHERE { ?destino a viajes:City . }";
+
+		//execute query
+		Query query = QueryFactory.create( queryString );
+		QueryExecution qe = QueryExecutionFactory.create( query, owlFile );
+		ResultSet results = qe.execSelect();
+		
+	}
+	
+	public double getMaxValue( List<Double> list ) {
+		
+		double toReturn = 0;
+		for( int i = 0 ; i < list.size() ; i++ ) {
+			if( list.get( i ) > toReturn ) {
+				toReturn = list.get( i );
+			}
+		}
+		
+		return toReturn;
 		
 	}
 	

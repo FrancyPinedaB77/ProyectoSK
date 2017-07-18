@@ -43,6 +43,8 @@ public class ApplicationView extends ApplicationFrame {
 	 * Atributos de la clase
 	 */
 	private JFormattedTextField stopTxt;
+	private JFormattedTextField stepTxt;
+	private JFormattedTextField iterTxt;
 	private JButton startBtn;
 	private JFreeChart loadTimeChrat;
 	private JFreeChart queryResponseTimeChrat;
@@ -82,21 +84,52 @@ public class ApplicationView extends ApplicationFrame {
 		
 		// Start
 		JPanel startPnl = new JPanel();
-		JLabel stopLbl = new JLabel( "Stop Parameter:" );
+		
+		JLabel experimentLbl = new JLabel( "EXPERIMENTS: " );
+		startPnl.add( experimentLbl );
+		
+		JLabel stopLbl = new JLabel( "Stop Parameter: " );
 		startPnl.add( stopLbl );
 		NumberFormat format = NumberFormat.getInstance();
-	    NumberFormatter formatter = new NumberFormatter(format);
+	    NumberFormatter formatter = new NumberFormatter( format );
 	    formatter.setValueClass( Integer.class );
-	    formatter.setMinimum( 0 );
+	    formatter.setMinimum( 1 );
 	    formatter.setMaximum( 100000 );
 	    formatter.setAllowsInvalid( false );
 		stopTxt = new JFormattedTextField( formatter );
-		stopTxt.setValue( 10 );
+		stopTxt.setValue( 100 );
 		stopTxt.setColumns( 6 );
 		startPnl.add( stopTxt );
+		
+		JLabel stepLbl = new JLabel( "Step (1/10/100): " );
+		startPnl.add( stepLbl );
+		NumberFormat format2 = NumberFormat.getInstance();
+	    NumberFormatter formatter2 = new NumberFormatter( format2 );
+	    formatter2.setValueClass( Integer.class );
+	    formatter2.setMinimum( 1 );
+	    formatter2.setMaximum( 100 );
+	    formatter2.setAllowsInvalid( false );
+		stepTxt = new JFormattedTextField( formatter2 );
+		stepTxt.setValue( 10 );
+		stepTxt.setColumns( 4 );
+		startPnl.add( stepTxt );
+		
+		JLabel iterLbl = new JLabel( "Iterations [1 - 20]: " );
+		startPnl.add( iterLbl );
+		NumberFormat format3 = NumberFormat.getInstance();
+	    NumberFormatter formatter3 = new NumberFormatter( format3 );
+	    formatter3.setValueClass( Integer.class );
+	    formatter3.setMinimum( 1 );
+	    formatter3.setMaximum( 20 );
+	    formatter3.setAllowsInvalid( false );
+		iterTxt = new JFormattedTextField( formatter3 );
+		iterTxt.setValue( 20 );
+		iterTxt.setColumns( 3 );
+		startPnl.add( iterTxt );
+		
 		startBtn = new JButton( "Start" );
 		startPnl.add( startBtn );
-		headerPnl.add( startPnl, BorderLayout.SOUTH );		
+		headerPnl.add( startPnl, BorderLayout.CENTER );
 		
 		/*
 		 * Body
@@ -110,14 +143,14 @@ public class ApplicationView extends ApplicationFrame {
 		 * Load Time Chart
 		 */
 		loadTimeChrat = ChartFactory.createXYAreaChart(
-				"Load Time",
+				"Load Time - Worst Case",
 				"Rows", "Milliseconds (ms)",
 				getLoadTimeDataset(),
 				PlotOrientation.VERTICAL,
 				true, true, false );
 		
 		ChartPanel loadTimePnl = new ChartPanel( loadTimeChrat );
-		//loadTimePnl.setPreferredSize( new java.awt.Dimension( 560 , 367 ) );
+		loadTimePnl.setPreferredSize( new java.awt.Dimension( 560 , 367 ) );
 		bodyPnl.add( loadTimePnl, BorderLayout.WEST );
 		
 		
@@ -125,21 +158,33 @@ public class ApplicationView extends ApplicationFrame {
 		 * Query Response Chart
 		 */
 		queryResponseTimeChrat = ChartFactory.createXYAreaChart(
-				"Query Response Time",
+				"Query Response Time - Worst Case",
 				"Rows", "Milliseconds (ms)",
 				getQueryResponseTimeDataset(),
 				PlotOrientation.VERTICAL,
 				true, true, false );
 		
 		ChartPanel queryResponsePnl = new ChartPanel( queryResponseTimeChrat );
-		//queryResponsePnl.setPreferredSize( new java.awt.Dimension( 560 , 367 ) );
+		queryResponsePnl.setPreferredSize( new java.awt.Dimension( 560 , 367 ) );
 		bodyPnl.add( queryResponsePnl, BorderLayout.EAST );
 		
 	}
 	
 	// Devuelve el valor actual digitado por el usuario en el campo de texto
-	public String getUserInput() {
-		return stopTxt.getText();
+	public int getStopValue() {
+		return ( int ) stopTxt.getValue();
+	}
+	
+	public int getStepValue() {
+		return ( int ) stepTxt.getValue();
+	}
+	
+	public void setStepValue( int text ) {
+		stepTxt.setValue( text );
+	}
+	
+	public int getIterValue() {
+		return ( int ) iterTxt.getValue();
 	}
 	
 	public JButton getStartBtn() {

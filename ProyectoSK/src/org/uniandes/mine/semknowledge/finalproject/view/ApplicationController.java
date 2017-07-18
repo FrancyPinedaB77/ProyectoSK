@@ -2,11 +2,7 @@ package org.uniandes.mine.semknowledge.finalproject.view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Observable;
-import java.util.Observer;
 
-import org.jfree.chart.event.ChartChangeEvent;
-import org.jfree.chart.event.ChartChangeListener;
 import org.uniandes.mine.semknowledge.finalproject.EvaluationModel;
 
 public class ApplicationController {
@@ -41,13 +37,16 @@ public class ApplicationController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			
-			int stopParam = Integer.parseInt( appView.getUserInput().replace( ".", "" ) );
+			int stopParam = appView.getStopValue();
+			int stepParam = appView.getStepValue();
+			int iterParam = appView.getIterValue();
 			
-			if( stopParam > 0 ) {
-				
-				evalModel.startEvaluation( stopParam );
-				
+			if( stepParam != 1 && stepParam != 10 && stepParam != 100 ) {
+				stepParam = 10;
+				appView.setStepValue( stepParam );
 			}
+				
+			evalModel.startEvaluation( stopParam, stepParam, iterParam );
 			
 		}
 		
