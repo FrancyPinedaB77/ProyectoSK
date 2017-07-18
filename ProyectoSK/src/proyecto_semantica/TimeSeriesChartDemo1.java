@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.StandardChartTheme;
+//import org.jfree.chart.StandardChartTheme;
 import org.jfree.chart.axis.DateAxis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
@@ -30,8 +30,8 @@ public class TimeSeriesChartDemo1 extends ApplicationFrame {
     {
         // set a theme using the new shadow generator feature available in
         // 1.0.14 - for backwards compatibility it is not enabled by default
-        ChartFactory.setChartTheme(new StandardChartTheme("JFreea/Shadow",
-                true));
+        //ChartFactory.setChartTheme(new StandardChartTheme("JFreea/Shadow",
+        //        true));
     }
 
     /**
@@ -166,7 +166,7 @@ public class TimeSeriesChartDemo1 extends ApplicationFrame {
         JFreeChart chart = createChart(createDataset());
         ChartPanel panel = new ChartPanel(chart);
         panel.setFillZoomRectangle(true);
-        panel.setMouseWheelEnabled(true);
+        //panel.setMouseWheelEnabled(true);
         return panel;
     }
 
