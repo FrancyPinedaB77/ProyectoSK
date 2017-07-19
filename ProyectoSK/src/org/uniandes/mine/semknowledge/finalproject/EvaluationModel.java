@@ -71,7 +71,7 @@ public class EvaluationModel {
 				
 				// Seleccionar clase aleatoria
 				int min=0;
-				int max=6; //Numero de clases que se van a usar
+				int max=5; //Numero de clases que se van a usar
 				int clase = ThreadLocalRandom.current().nextInt(min, max + 1);
 				String statement="";
 				switch (clase) {
