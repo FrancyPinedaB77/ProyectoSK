@@ -1,6 +1,7 @@
 package org.uniandes.mine.semknowledge.finalproject;
 
 import org.jfree.ui.RefineryUtilities;
+import org.uniandes.mine.semknowledge.finalproject.model.EvaluationModel;
 import org.uniandes.mine.semknowledge.finalproject.view.ApplicationController;
 import org.uniandes.mine.semknowledge.finalproject.view.ApplicationView;
 

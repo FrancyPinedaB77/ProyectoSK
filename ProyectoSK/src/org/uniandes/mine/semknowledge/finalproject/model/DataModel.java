@@ -1,9 +1,10 @@
-package org.uniandes.mine.semknowledge.finalproject;
+package org.uniandes.mine.semknowledge.finalproject.model;
 
-import org.jfree.data.category.DefaultCategoryDataset;
+
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+
 
 public class DataModel {
 	

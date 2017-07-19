@@ -3,7 +3,7 @@ package org.uniandes.mine.semknowledge.finalproject.view;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import org.uniandes.mine.semknowledge.finalproject.EvaluationModel;
+import org.uniandes.mine.semknowledge.finalproject.model.EvaluationModel;
 
 public class ApplicationController {
 	
