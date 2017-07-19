@@ -11,6 +11,7 @@ import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.ibm.icu.text.DateFormat;
 import com.ibm.icu.text.SimpleDateFormat;
+import java.util.concurrent.ThreadLocalRandom;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -104,6 +105,50 @@ public class Principal {
 		tiempos_query[i]=diferencia2;
 		// print results nicely
 		System.out.println(ResultSetFormatter.asText(results));
+		
+
+
+		// nextInt is normally exclusive of the top value,
+		// so add 1 to make it inclusive
+		
+		
+		for( int k = 1 ; k <= 10 ; k++ ) {
+			
+			// Seleccionar clase aleatoria
+			int clase = (int) Math.random() * 4;
+			int min=0;
+			int max=5;
+			int randomNum = ThreadLocalRandom.current().nextInt(min, max + 1);
+			System.out.println("EL VALOR DEL NUMERO ALEATORIO ES :"+randomNum);
+
+			switch(randomNum) {
+			case 0:{
+			
+				System.out.println("el valor del caso es EL CASO DE ES  :"+randomNum);
+				break;
+			}
+			case 1:
+				
+				System.out.println("el caso uno ES :"+randomNum);
+				break;
+				
+			case 2:
+				System.out.println("el caso DOS ES :"+randomNum);
+				break;
+			case 3:
+				System.out.println("el caso DOS ES :"+randomNum);
+				break;
+			case 4:
+				System.out.println("el caso DOS ES :"+randomNum);
+				break;
+			case 5:
+				System.out.println("el caso DOS ES :"+randomNum);
+				break;
+			case 6:
+				System.out.println("el caso DOS ES :"+randomNum);
+				break;
+			}
+		}
 
     }
     

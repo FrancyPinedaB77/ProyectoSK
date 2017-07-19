@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -61,57 +62,68 @@ public class EvaluationModel {
 			}
 			
 			dataModel.getRdfLoadTimeDataset().add( i , getMaxValue( acum ) );
-			
 			/*
 			 * Load Time - OWL
 			 */
-			/*
+			//--------------------inicio de casos para clases aleatorias-------------------------
+			
 			for( int k = 1 ; k <= stepParam ; k++ ) {
 				
 				// Seleccionar clase aleatoria
-				int clase = (int) Math.random() * 13;
-				
-				switch( clase ) {
-					case 0:
-						String statement = "\n" +"	"+ "<owl:NamedIndividual rdf:about="http://www.owl-ontologies.com/travel.owl#BackDestination_lugar_">"+k+"\">"+ "\n";
-						statement += "		"+ "<rdf:type rdf:resource="http://www.owl-ontologies.com/travel.owl#BackpackersDestination"/>"+"\n";
-						statement += "		"+ "<hasActivity rdf:resource="http://www.owl-ontologies.com/travel.owl#sports_tipo_0"/>"+"\n";
-						statement += "		"+ "<hasRating rdf:resource="http://www.owl-ontologies.com/travel.owl#OneStarRating"/>"+"\n";
+				int min=0;
+				int max=6; //Numero de clases que se van a usar
+				int clase = ThreadLocalRandom.current().nextInt(min, max + 1);
+				String statement="";
+				switch (clase) {
+					
+					case 0:{
+						statement = "\n" +"	"+ "<owl:NamedIndividual rdf:about=\"http://www.owl-ontologies.com/travel.owl#BackDestination_lugar_"+ k+"\">"+ "\n";
+						statement += "		"+ "<rdf:type rdf:resource=\"http://www.owl-ontologies.com/travel.owl#BackpackersDestination\"/>"+"\n";
+						statement += "		"+ "<hasActivity rdf:resource=\"http://www.owl-ontologies.com/travel.owl#sports_tipo_0\"/>"+"\n";
+						statement += "		"+ "<hasRating rdf:resource=\ttp://www.owl-ontologies.com/travel.owl#OneStarRating\"/>"+"\n";
 						statement += "	"+"</owl:NamedIndividual>"+ "\n\n";						
 						break;
-					case 1:
-						String statement = "\n" +"	"+ "<owl:NamedIndividual rdf:about="http://www.owl-ontologies.com/travel.owl#BondiBeach_">"+k+"\">"+ "\n";
-						statement += "		"+"<rdf:type rdf:resource="http://www.owl-ontologies.com/travel.owl#Beach"/>"+"\n";
+					}
+					case 1:{
+						statement = "\n" +"	"+ "<owl:NamedIndividual rdf:about=\"http://www.owl-ontologies.com/travel.owl#BondiBeach_"+k+"\">"+ "\n";
+						statement += "		"+"<rdf:type rdf:resource=\"http://www.owl-ontologies.com/travel.owl#Beach"+"\n";
 						statement += "	"+"</owl:NamedIndividual>"+ "\n\n";						
 						break;
-					case 2:
-						String statement = "\n" +"	"+ "<owl:NamedIndividual rdf:about="http://www.owl-ontologies.com/travel.owl#BudgetHotel_lugar_">"+k+"\">"+ "\n";
-						statement += "		"+"<rdf:type rdf:resource="http://www.owl-ontologies.com/travel.owl#BudgetHotelDestination"/>"+"\n";
-						statement += "		"+"<hasAccommodation rdf:resource="http://www.owl-ontologies.com/travel.owl#OneStarRating"/>"+"\n";
-						statement += "		"+"<hasActivity rdf:resource="http://www.owl-ontologies.com/travel.owl#sports_tipo_0"/>"+"\n";
+					}
+					case 2:{
+						statement = "\n" +"	"+ "<owl:NamedIndividual rdf:about=\"http://www.owl-ontologies.com/travel.owl#BudgetHotel_lugar_"+k+"\">"+ "\n";
+						statement += "		"+"<rdf:type rdf:resource=\"http://www.owl-ontologies.com/travel.owl#BudgetHotelDestination\"/>"+"\n";
+						statement += "		"+"<hasAccommodation rdf:resource=\"http://www.owl-ontologies.com/travel.owl#OneStarRating\"/>"+"\n";
+						statement += "		"+"<hasActivity rdf:resource=\"http://www.owl-ontologies.com/travel.owl#sports_tipo_0\"/>"+"\n";
 						statement += "	"+"</owl:NamedIndividual>"+ "\n\n";		
-						break;			
-					case 3:
-						String statement = "\n" +"	"+ "<owl:NamedIndividual rdf:about="http://www.owl-ontologies.com/travel.owl#Familiar_lugar_">"+k+"\">"+ "\n";
-						statement += "		"+"<rdf:type rdf:resource="http://www.owl-ontologies.com/travel.owl#FamilyDestination"/>"+"\n";
-						statement += "		"+"<hasAccommodation rdf:resource="http://www.owl-ontologies.com/travel.owl#TwoStarRating"/>"+"\n";
-						statement += "		"+"<hasActivity rdf:resource="http://www.owl-ontologies.com/travel.owl#Hikin_tipo_0"/>"+"\n";
-						statement += "		"+"<hasActivity rdf:resource="http://www.owl-ontologies.com/travel.owl#sports_tipo_0"/>"+"\n";
+						break;
+					}
+					case 3:{
+						statement = "\n" +"	"+ "<owl:NamedIndividual rdf:about=\"http://www.owl-ontologies.com/travel.owl#Familiar_lugar_"+k+"\">"+ "\n";
+						statement += "		"+"<rdf:type rdf:resource=\"http://www.owl-ontologies.com/travel.owl#FamilyDestination\"/>"+"\n";
+						statement += "		"+"<hasAccommodation rdf:resource=\"http://www.owl-ontologies.com/travel.owl#TwoStarRating\"/>"+"\n";
+						statement += "		"+"<hasActivity rdf:resource=\"http://www.owl-ontologies.com/travel.owl#Hikin_tipo_0\"/>"+"\n";
+						statement += "		"+"<hasActivity rdf:resource=\"http://www.owl-ontologies.com/travel.owl#sports_tipo_0\"/>"+"\n";
 						statement += "	"+"</owl:NamedIndividual>"+ "\n\n";					
 						break;
-					case 4:
-						String statement = "\n" +"	"+ "<owl:NamedIndividual rdf:about="http://www.owl-ontologies.com/travel.owl#QuietDestination_lugar_">"+k+"\">"+ "\n";
-						statement += "		"+"<rdf:type rdf:resource="http://www.owl-ontologies.com/travel.owl#QuietDestination"/>"+"\n";
-						statement += "		"+"<hasActivity rdf:resource="http://www.owl-ontologies.com/travel.owl#sports_tipo_0"/>"+"\n";
+					}
+					case 4:{
+						statement = "\n" +"	"+ "<owl:NamedIndividual rdf:about=\"http://www.owl-ontologies.com/travel.owl#QuietDestination_lugar_"+k+"\">"+ "\n";
+						statement += "		"+"<rdf:type rdf:resource=\"http://www.owl-ontologies.com/travel.owl#QuietDestination\"/>"+"\n";
+						statement += "		"+"<hasActivity rdf:resource=\"http://www.owl-ontologies.com/travel.owl#sports_tipo_0\"/>"+"\n";
 						statement += "	"+"</owl:NamedIndividual>"+ "\n\n";
 						break;
-					case 5:
-						String statement = "\n" +"	"+ "<owl:NamedIndividual rdf:about="http://www.owl-ontologies.com/travel.owl#RetireDestination_lugar_">"+k+"\">"+ "\n";
-						statement += "		"+"<rdf:type rdf:resource="http://www.owl-ontologies.com/travel.owl#RetireeDestination"/>"+"\n";
-						statement += "		"+"<hasAccommodation rdf:resource="http://www.owl-ontologies.com/travel.owl#FourSeasons"/>"+"\n";
-						statement += "		"+"<hasActivity rdf:resource="http://www.owl-ontologies.com/travel.owl#Museum_lugar_0"/>"+"\n";
-						statement += "	"+"</owl:NamedIndividual>"+ "\n\n";					
-						break;				
+					}
+					case 5:{
+						statement = "\n" +"	"+ "<owl:NamedIndividual rdf:about=\"http://www.owl-ontologies.com/travel.owl#RetireDestination_lugar_"+k+"\">"+ "\n";
+						statement += "		"+"<rdf:type rdf:resource=\"http://www.owl-ontologies.com/travel.owl#RetireeDestination\"/>"+"\n";
+						statement += "		"+"<hasAccommodation rdf:resource=\"http://www.owl-ontologies.com/travel.owl#FourSeasons\"/>"+"\n";
+						statement += "		"+"<hasActivity rdf:resource=\"http://www.owl-ontologies.com/travel.owl#Museum_lugar_0\"/>"+"\n";
+						statement += "	"+"</owl:NamedIndividual>"+ "\n\n";
+						break;
+					}
+				}
+						
 				Path path =Paths.get("src/travel_v3.owl");
 				Charset charset = StandardCharsets.UTF_8;
 				String content;
@@ -123,11 +135,8 @@ public class EvaluationModel {
 					//Auto-generated catch block
 					e.printStackTrace();		
 				}
-				
 			}
-			*/
-		
-			
+						
 			acum = new ArrayList<Double>();
 			for( int j = 0 ; j < iterParam ; j++ ) {
 				
