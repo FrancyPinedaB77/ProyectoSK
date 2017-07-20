@@ -20,6 +20,7 @@ import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 public class EvaluationModel {
@@ -29,7 +30,7 @@ public class EvaluationModel {
 	 */
 	private DataModel dataModel = DataModel.getInstance();
 	
-	private String OWL_PATH = "src/travel2.owl";
+	private String OWL_PATH = "src/travel.owl";
 	private String OWL_PATH_TEMP = "src/travel_tmp.owl";
 	
 	
@@ -49,31 +50,21 @@ public class EvaluationModel {
 		dataModel.getRdfQueryResponseTimeDataset().clear();
 		dataModel.getOwlQueryResponseTimeDataset().clear();
 		
-		for( int i = 1 ; i <= stopParam + 1 ; i = i + stepParam ) {
+		OWLUtilities owlUtilities = new OWLUtilities( OWL_PATH, OWL_PATH_TEMP );
+		
+		for( int i =  stepParam ; i <= stopParam ; i = i + stepParam ) {
 			
 			OntModel owlFile = null;
-			
-			/*
-			 * Load Time - RDF
-			 */
-			
-			List<Double> acum = new ArrayList<Double>();
-			for( int j = 0 ; j < iterParam ; j++ ) {
-				acum.add( Math.random() * 10 );
-			}
-			
-			dataModel.getRdfLoadTimeDataset().add( i , getMaxValue( acum ) );
-			
-			/*
-			 * Load Time - OWL
-			 */
-			
-			// Se crea el OWL temporal y se ingresan los individuos
-			OWLUtilities owlUtils = new OWLUtilities( OWL_PATH, OWL_PATH_TEMP );
-			owlUtils.createIndividuals( stopParam );
+			List<Double> acumLoadTime = new ArrayList<Double>();
+			List<Double> acumQueryResponseTime = new ArrayList<Double>();
 						
-			acum = new ArrayList<Double>();
+			// Se crea el OWL temporal y se ingresan los individuos
+			owlUtilities.createIndividuals( stepParam );
+			
+			// Iteraciones por experimento
 			for( int j = 0 ; j < iterParam ; j++ ) {
+				
+				// Lectura del tiempo de carga del archivo
 				
 				Date initTime = new Date();
 				
@@ -82,47 +73,28 @@ public class EvaluationModel {
 				Date endDate = new Date();
 				long diferencia= endDate.getTime() - initTime.getTime();
 				
-				acum.add( Double.parseDouble( diferencia + "" ) );
+				acumLoadTime.add( Double.parseDouble( diferencia + "" ) );
 				
-			}
-			
-			dataModel.getOwlLoadTimeDataset().add( i , getMaxValue( acum ) );
-			
-			/*
-			 * Query Response Time - RDF
-			 */
-			
-			acum = new ArrayList<Double>();
-			for( int j = 0 ; j < iterParam ; j++ ) {
-				acum.add( Math.random() * 10 );
-			}
-			
-			dataModel.getRdfQueryResponseTimeDataset().add( i , getMaxValue( acum ) );
-			
-			/*
-			 * Query Response Time - OWL
-			 */
-			
-			acum = new ArrayList<Double>();
-			for( int j = 0 ; j < iterParam ; j++ ) {
-				
-				Date initTime = new Date();
+				// Lectura del tiempo de consulta del archivo
+							
+				initTime = new Date();
 				
 				queryOWLFile( owlFile );
 				
-				Date endDate = new Date();
-				long diferencia= endDate.getTime() - initTime.getTime();
+				endDate = new Date();
+				diferencia = endDate.getTime() - initTime.getTime();
 				
-				acum.add( Double.parseDouble( diferencia + "" ) );
+				acumQueryResponseTime.add( Double.parseDouble( diferencia + "" ) );
 				
 			}
 			
-			dataModel.getOwlQueryResponseTimeDataset().add( i , getMaxValue( acum ) );
-			
-			// Se eliminan los archivos RDF y OWL duplicados
-			owlUtils.removeDuplicatedFile();
+			dataModel.getOwlLoadTimeDataset().add( i , getMaxValue( acumLoadTime ) );
+			dataModel.getOwlQueryResponseTimeDataset().add( i , getMaxValue( acumQueryResponseTime ) );
 			
 		}
+		
+		// Se eliminan los archivos RDF y OWL duplicados
+		owlUtilities.removeDuplicatedFile();
 		
 	}
 	
@@ -133,7 +105,7 @@ public class EvaluationModel {
 		try {
 			
 			owlFile = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_MICRO_RULE_INF );
-			owlFile.read( new FileInputStream( OWL_PATH ), "RDF/XML" );
+			owlFile.read( new FileInputStream( OWL_PATH_TEMP ), "RDF/XML" );
 			
 		} catch (FileNotFoundException e) {
 			System.err.println( "Error al cargar el archivo OWL" ) ;
@@ -146,14 +118,23 @@ public class EvaluationModel {
 	
 	public void queryOWLFile( OntModel owlFile ) {
 		
-		String queryString = "PREFIX viajes:<http://www.owl-ontologies.com/travel.owl#>"+"\n";
-		queryString += "SELECT  ?destino"+ "\n";
-		queryString += "WHERE { ?destino a viajes:City . }";
+		ResultSet results = null;
+		
+		String queryString = "PREFIX viajes:<http://www.owl-ontologies.com/travel.owl#>" +"\n";
+		queryString += "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>" + "\n";
+		queryString += "SELECT ?destino (SAMPLE(?type) AS ?type) (SAMPLE(?activity) AS ?activity) (SAMPLE(?accommodation) AS ?accommodation) (SAMPLE(?rating) AS ?rating)" + "\n";
+		queryString += "WHERE { ?destino a ?type ." + "\n";
+		queryString += "?type rdfs:subClassOf viajes:Destination" + "\n";
+		queryString += "OPTIONAL { ?destino viajes:hasActivity ?activity }" + "\n";
+		queryString += "OPTIONAL { ?destino viajes:hasAccommodation ?accommodation }" + "\n";
+		queryString += "OPTIONAL { ?accommodation viajes:hasRating ?rating } }" + "\n";
+		queryString += "GROUP BY ?destino";
 
 		//execute query
 		Query query = QueryFactory.create( queryString );
 		QueryExecution qe = QueryExecutionFactory.create( query, owlFile );
-		ResultSet results = qe.execSelect();
+		results = qe.execSelect();
+		System.out.println(ResultSetFormatter.asText(results));
 		
 	}
 	
