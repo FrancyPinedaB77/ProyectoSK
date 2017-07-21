@@ -12,6 +12,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.nio.file.Files;
 import java.text.NumberFormat;
 
 import javax.swing.GroupLayout.Alignment;
@@ -84,6 +86,10 @@ public class ApplicationView extends ApplicationFrame {
 		
 		// Start
 		JPanel startPnl = new JPanel();
+		
+		//Borrando archivo
+		File file = new File("src/travel_tmp.owl");
+		file.delete();
 		
 		JLabel experimentLbl = new JLabel( "EXPERIMENTS: " );
 		startPnl.add( experimentLbl );
