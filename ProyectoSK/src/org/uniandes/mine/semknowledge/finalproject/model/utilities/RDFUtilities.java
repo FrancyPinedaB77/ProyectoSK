@@ -25,7 +25,6 @@ public class RDFUtilities extends FileUtilities {
 			statement += "\t\t" + "<travel:type rdf:resource=\"http://www.owl-ontologies.com/travel.owl#AccommodationType_0\"/>" + "\n";
 			statement += "\t\t" + "<travel:hasAccommodation rdf:resource=\"http://www.owl-ontologies.com/travel.owl#Accommodation_0\"/>" + "\n";
 			statement += "\t\t" + "<travel:hasActivity rdf:resource=\"http://www.owl-ontologies.com/travel.owl#Activity_0\"/>" + "\n";
-			statement += "\t\t" + "<travel:hasRating rdf:resource=\"http://www.owl-ontologies.com/travel.owl#Rating_0\"/>" + "\n";
 			statement += "\t" + "</rdf:Description>" + "\n";
 			
 			Path path = Paths.get( FILE_PATH_TEMP );

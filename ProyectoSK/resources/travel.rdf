@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:travel="http://www.owl-ontologies.com/travel.owl#">
 	
+	<rdf:Description rdf:about="http://www.owl-ontologies.com/travel.owl#Accommodation_0">
+		<travel:hasRating rdf:resource="http://www.owl-ontologies.com/travel.owl#Rating_0"/>
+	</rdf:Description>
+	
 	<rdf:Description rdf:about="http://www.owl-ontologies.com/travel.owl#DestinationExample">
 		<travel:type rdf:resource="http://www.owl-ontologies.com/travel.owl#AccommodationType_0"/>
 		<travel:hasAccommodation rdf:resource="http://www.owl-ontologies.com/travel.owl#Accommodation_0"/>
 		<travel:hasActivity rdf:resource="http://www.owl-ontologies.com/travel.owl#Activity_0"/>
-		<travel:hasRating rdf:resource="http://www.owl-ontologies.com/travel.owl#Rating_0"/>
 	</rdf:Description>
 
 </rdf:RDF>

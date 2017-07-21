@@ -2,17 +2,10 @@ package org.uniandes.mine.semknowledge.finalproject.model;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 import org.uniandes.mine.semknowledge.finalproject.model.utilities.OWLUtilities;
 import org.uniandes.mine.semknowledge.finalproject.model.utilities.RDFUtilities;
@@ -36,10 +29,10 @@ public class EvaluationModel {
 	 */
 	private DataModel dataModel = DataModel.getInstance();
 	
-	private String RDF_PATH = "src/travel.rdf";
-	private String RDF_PATH_TEMP = "src/travel_tmp.rdf";
-	private String OWL_PATH = "src/travel.owl";
-	private String OWL_PATH_TEMP = "src/travel_tmp.owl";
+	private String RDF_PATH = "resources/travel.rdf";
+	private String RDF_PATH_TEMP = "resources/travel_tmp.rdf";
+	private String OWL_PATH = "resources/travel.owl";
+	private String OWL_PATH_TEMP = "resources/travel_tmp.owl";
 	
 	
 	/*
@@ -50,12 +43,7 @@ public class EvaluationModel {
 	public EvaluationModel() {}
 	
 	// Método que inicia la evaluación
-	public void startEvaluation( int stopParam, int stepParam, int iterParam ) {
-		
-		System.out.println( "Se correra un total de " + ( stopParam / stepParam ) + "con la siguinete configuración:" );
-		System.out.println( " - Número máximo de registros / individos a obtener: " + stopParam );
-		System.out.println( " - Aumento en la cantidad de registros / individos en cada experimento: " + stepParam );
-		System.out.println( " - Cantidad de iteraciones por cada experimento: " + iterParam );
+	public void startEvaluation( int stopParam, int stepParam, int iterParam, String caseParam ) {
 		
 		// Reinicia los datasets
 		dataModel.getRdfLoadTimeDataset().clear();
@@ -63,15 +51,25 @@ public class EvaluationModel {
 		dataModel.getRdfQueryResponseTimeDataset().clear();
 		dataModel.getOwlQueryResponseTimeDataset().clear();
 		
+		// Carga y consulta inicial
+		Model rdfFile = loadRDFFile();
+		OntModel owlFile = loadOWLFile();
+		queryRDFFile( rdfFile, 1 );
+		queryOWLFile( owlFile, 1 );
+		
 		/* 
 		 * RDF
 		 */
 		
 		RDFUtilities rdfUtilities = new RDFUtilities( RDF_PATH, RDF_PATH_TEMP );
 		
+		int exp = 0;
 		for( int i =  0 ; i <= stopParam ; i = i + stepParam ) {
 			
-			Model rdfFile = null;
+			exp += 1;
+			System.out.println( "EXPERIMETO SOBRE RDF # " + exp );
+			
+			rdfFile = null;
 			List<Double> acumLoadTime = new ArrayList<Double>();
 			List<Double> acumQueryResponseTime = new ArrayList<Double>();
 			
@@ -105,8 +103,8 @@ public class EvaluationModel {
 				
 			}
 			
-			dataModel.getRdfLoadTimeDataset().add( i , getMaxValue( acumLoadTime ) );
-			dataModel.getRdfQueryResponseTimeDataset().add( i , getMaxValue( acumQueryResponseTime ) );
+			dataModel.getRdfLoadTimeDataset().add( i , getCaseValue( acumLoadTime, caseParam ) );
+			dataModel.getRdfQueryResponseTimeDataset().add( i , getCaseValue( acumQueryResponseTime, caseParam ) );
 			
 		}
 		
@@ -116,9 +114,13 @@ public class EvaluationModel {
 		
 		OWLUtilities owlUtilities = new OWLUtilities( OWL_PATH, OWL_PATH_TEMP );
 		
+		exp = 0;
 		for( int i =  0 ; i <= stopParam ; i = i + stepParam ) {
 			
-			OntModel owlFile = null;
+			exp += 1;
+			System.out.println( "EXPERIMETO SOBRE RDF # " + exp );
+			
+			owlFile = null;
 			List<Double> acumLoadTime = new ArrayList<Double>();
 			List<Double> acumQueryResponseTime = new ArrayList<Double>();
 						
@@ -152,8 +154,8 @@ public class EvaluationModel {
 				
 			}
 			
-			dataModel.getOwlLoadTimeDataset().add( i , getMaxValue( acumLoadTime ) );
-			dataModel.getOwlQueryResponseTimeDataset().add( i , getMaxValue( acumQueryResponseTime ) );
+			dataModel.getOwlLoadTimeDataset().add( i , getCaseValue( acumLoadTime, caseParam ) );
+			dataModel.getOwlQueryResponseTimeDataset().add( i , getCaseValue( acumQueryResponseTime, caseParam ) );
 			
 		}
 		
@@ -214,7 +216,7 @@ public class EvaluationModel {
 		queryString += "WHERE { ?destination travel:type ?type ." + "\n";
 		queryString += "OPTIONAL { ?destination travel:hasActivity ?activity }" + "\n";
 		queryString += "OPTIONAL { ?destination travel:hasAccommodation ?accommodation }" + "\n";
-		queryString += "OPTIONAL { ?destination travel:hasRating ?rating } }" + "\n";
+		queryString += "OPTIONAL { ?accommodation travel:hasRating ?rating } }" + "\n";
 		queryString += "LIMIT " + limit;
 		
 
@@ -222,7 +224,7 @@ public class EvaluationModel {
 		Query query = QueryFactory.create( queryString );
 		QueryExecution qe = QueryExecutionFactory.create( query, rdfFile );
 		results = qe.execSelect();
-		System.out.println(ResultSetFormatter.asText(results));
+		System.out.println( ResultSetFormatter.asText( results ) );
 		
 	}
 	
@@ -245,7 +247,19 @@ public class EvaluationModel {
 		Query query = QueryFactory.create( queryString );
 		QueryExecution qe = QueryExecutionFactory.create( query, owlFile );
 		results = qe.execSelect();
-		System.out.println(ResultSetFormatter.asText(results));
+		System.out.println( ResultSetFormatter.asText( results ) );
+		
+	}
+	
+	public double getCaseValue( List<Double> list, String caseParam ) {
+		
+		if( caseParam.equals( "Best" ) ) {
+			return getMinValue( list );
+		} else if( caseParam.equals( "Mean" ) ) {
+			return getMeanValue( list );
+		} else {
+			return getMaxValue( list );
+		}
 		
 	}
 	
@@ -259,6 +273,30 @@ public class EvaluationModel {
 		}
 		
 		return toReturn;
+		
+	}
+	
+	public double getMinValue( List<Double> list ) {
+		
+		double toReturn = list.get( 0 );
+		for( int i = 1 ; i < list.size() ; i++ ) {
+			if( list.get( i ) < toReturn ) {
+				toReturn = list.get( i );
+			}
+		}
+		
+		return toReturn;
+		
+	}
+	
+	public double getMeanValue( List<Double> list ) {
+		
+		double toReturn = 0;
+		for( int i = 0 ; i < list.size() ; i++ ) {
+			toReturn += list.get( i );
+		}
+		
+		return toReturn / list.size();
 		
 	}
 	

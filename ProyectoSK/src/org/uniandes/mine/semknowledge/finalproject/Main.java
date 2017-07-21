@@ -13,7 +13,8 @@ public class Main {
 		ApplicationView appView = new ApplicationView(
 				"Semantic Knowledge Engineering and Applications",
 				"Final Project: RDF vs OWL Performance Evaluation",
-				"Francy Julieth Pineda - Fabian Camilo Peña" );
+				"Francy Julieth Pineda - Fabian Camilo Peña",
+				"Universidad de los Andes - Julio 2017" );
 		
 		// Se instancia el modelo
 		EvaluationModel evalModel = new EvaluationModel();
