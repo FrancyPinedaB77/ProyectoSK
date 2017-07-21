@@ -123,7 +123,7 @@ public class ApplicationView extends ApplicationFrame {
 	    formatter3.setMaximum( 20 );
 	    formatter3.setAllowsInvalid( false );
 		iterTxt = new JFormattedTextField( formatter3 );
-		iterTxt.setValue( 20 );
+		iterTxt.setValue( 5 );
 		iterTxt.setColumns( 3 );
 		startPnl.add( iterTxt );
 		
@@ -144,7 +144,7 @@ public class ApplicationView extends ApplicationFrame {
 		 */
 		loadTimeChrat = ChartFactory.createXYAreaChart(
 				"Load Time - Worst Case",
-				"Rows", "Milliseconds (ms)",
+				"Rows / Individuals", "Milliseconds (ms)",
 				getLoadTimeDataset(),
 				PlotOrientation.VERTICAL,
 				true, true, false );
@@ -159,7 +159,7 @@ public class ApplicationView extends ApplicationFrame {
 		 */
 		queryResponseTimeChrat = ChartFactory.createXYAreaChart(
 				"Query Response Time - Worst Case",
-				"Rows", "Milliseconds (ms)",
+				"Rows / Individuals", "Milliseconds (ms)",
 				getQueryResponseTimeDataset(),
 				PlotOrientation.VERTICAL,
 				true, true, false );
