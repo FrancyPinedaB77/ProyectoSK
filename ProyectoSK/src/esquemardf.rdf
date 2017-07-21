@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<rdf:RDF
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+xmlns:tabla="http://www.owl-ontologies.com/travel.owl#">
+<rdf:Description
+rdf:about="http://www.owl-ontologies.com/travel.owl#Destination_1">
+<tabla:hasAccommodation rdf:resource="http://www.owl-ontologies.com/travel.owl#Accommodation_0"/>
+<tabla:hasActivity rdf:resource="http://www.owl-ontologies.com/travel.owl#Activity_0"/>
+<tabla:hasRating rdf:resource="http://www.owl-ontologies.com/travel.owl#Rating_0 "/>
+</rdf:Description>
