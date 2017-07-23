@@ -118,7 +118,7 @@ public class EvaluationModel {
 		for( int i =  0 ; i <= stopParam ; i = i + stepParam ) {
 			
 			exp += 1;
-			System.out.println( "EXPERIMETO SOBRE RDF # " + exp );
+			System.out.println( "EXPERIMETO SOBRE OWL # " + exp );
 			
 			owlFile = null;
 			List<Double> acumLoadTime = new ArrayList<Double>();
@@ -198,7 +198,7 @@ public class EvaluationModel {
 			}
 			
 		} catch (IllegalArgumentException e) {
-			System.err.println( "Error al cargar el archivo OWL" ) ;
+			System.err.println( "Error al cargar el archivo RDF" ) ;
 			e.printStackTrace();
 		}
 		

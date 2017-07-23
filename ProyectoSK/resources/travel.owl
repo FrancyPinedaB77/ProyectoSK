@@ -291,12 +291,6 @@
     
 
 
-    <!-- http://www.owl-ontologies.com/travel.owl#Capital -->
-
-    <owl:Class rdf:about="http://www.owl-ontologies.com/travel.owl#Capital"/>
-    
-
-
     <!-- http://www.owl-ontologies.com/travel.owl#City -->
 
     <owl:Class rdf:about="http://www.owl-ontologies.com/travel.owl#City">
