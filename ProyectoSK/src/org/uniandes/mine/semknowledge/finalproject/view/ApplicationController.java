@@ -43,7 +43,7 @@ public class ApplicationController {
 			int iterParam = appView.getIterValue();
 			String caseParam = appView.getCaseValue();
 			
-			if( stepParam != 1 && stepParam != 10 && stepParam != 100 ) {
+			if( stepParam != 1 && stepParam != 10 && stepParam != 100 && stepParam != 1000 ) {
 				stepParam = 10;
 				appView.setStepValue( stepParam );
 			}

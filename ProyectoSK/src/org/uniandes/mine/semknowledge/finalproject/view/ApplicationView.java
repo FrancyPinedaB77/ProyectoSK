@@ -97,7 +97,7 @@ public class ApplicationView extends ApplicationFrame {
 	    NumberFormatter formatter2 = new NumberFormatter( format2 );
 	    formatter2.setValueClass( Integer.class );
 	    formatter2.setMinimum( 1 );
-	    formatter2.setMaximum( 100 );
+	    formatter2.setMaximum( 1000 );
 	    formatter2.setAllowsInvalid( false );
 		stepTxt = new JFormattedTextField( formatter2 );
 		stepTxt.setValue( 10 );
